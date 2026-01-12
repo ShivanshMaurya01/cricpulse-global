@@ -3,49 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CricPulse | Global Live Scores</title>
+    <title>CricPulse | Global Cricket Authority</title>
     <style>
-        :root { --primary: #00e5ff; --bg: #0b0e14; --card: #161b22; --text: #f0f6fc; }
-        body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        header { width: 100%; padding: 20px; text-align: center; border-bottom: 1px solid #30363d; background: var(--card); }
-        .logo { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
-        .container { max-width: 500px; width: 90%; margin-top: 40px; }
-        .match-card { background: var(--card); border-radius: 12px; padding: 24px; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .status { color: #f85149; font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; }
-        .status::before { content: ""; width: 8px; height: 8px; background: #f85149; border-radius: 50%; margin-right: 8px; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        .teams { font-size: 18px; color: #8b949e; margin-bottom: 10px; }
-        .score { font-size: 54px; font-weight: bold; margin: 10px 0; color: #ffffff; }
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        button { padding: 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        :root { --primary: #00f2ff; --bg: #0d1117; --card: #161b22; --text: #c9d1d9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 50px; }
+        
+        /* Header & Logo */
+        header { background: #010409; padding: 20px; text-align: center; border-bottom: 1px solid #30363d; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 28px; font-weight: 900; color: var(--primary); letter-spacing: -1px; }
+        .logo span { color: #ffffff; }
+
+        .container { max-width: 800px; margin: auto; padding: 20px; }
+
+        /* Score Card Section */
+        .match-card { background: var(--card); border-radius: 12px; padding: 25px; border: 1px solid #30363d; margin-bottom: 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .live-tag { background: #f85149; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 15px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .score { font-size: 60px; font-weight: bold; color: white; margin: 10px 0; }
+        .btn-group { margin-top: 20px; }
+        button { padding: 12px 25px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; margin: 5px; transition: 0.3s; }
         .btn-run { background: var(--primary); color: #000; }
         .btn-wicket { background: #f85149; color: white; }
-        footer { margin-top: auto; padding: 20px; font-size: 12px; color: #484f58; }
+
+        /* News Section */
+        .section-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; border-left: 4px solid var(--primary); padding-left: 15px; color: white; }
+        .news-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .news-item { background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid #30363d; display: flex; align-items: center; transition: 0.2s; cursor: pointer; }
+        .news-item:hover { border-color: var(--primary); background: #1c2128; }
+        .news-thumb { width: 60px; height: 60px; background: #30363d; border-radius: 6px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .news-content h3 { margin: 0; font-size: 16px; color: #f0f6fc; }
+        .news-content p { margin: 5px 0 0; font-size: 13px; color: #8b949e; }
     </style>
 </head>
 <body>
-    <header><div class="logo">CRIC<span>PULSE</span></div></header>
-    <div class="container">
-        <div class="match-card">
-            <div class="status">Live Match</div>
-            <div class="teams">International Series | Match #42</div>
-            <div id="display-score" class="score">0/0</div>
-            <div class="details">Overs: <span id="overs">0.0</span></div>
-            <div class="btn-group">
-                <button class="btn-run" onclick="addRun()">+1 RUN</button>
-                <button class="btn-wicket" onclick="addWicket()">WICKET</button>
+
+<header><div class="logo">CRIC<span>PULSE</span> GLOBAL</div></header>
+
+<div class="container">
+    <div class="match-card">
+        <div class="live-tag">LIVE MATCH</div>
+        <div style="color: #8b949e; font-size: 14px;">International T20 Series</div>
+        <div id="display-score" class="score">0/0</div>
+        <div id="overs" style="font-size: 18px; color: #8b949e;">Overs: 0.0</div>
+        <div class="btn-group">
+            <button class="btn-run" onclick="addRun()">+1 RUN</button>
+            <button class="btn-wicket" onclick="addWicket()">WICKET</button>
+        </div>
+    </div>
+
+    <div class="section-title">World Cricket Headlines</div>
+    <div class="news-grid" id="news-container">
+        <div class="news-item">
+            <div class="news-thumb">🏏</div>
+            <div class="news-content">
+                <h3>Loading Global News...</h3>
+                <p>Fetching the latest updates from the cricket world.</p>
             </div>
         </div>
     </div>
-    <footer>&copy; 2026 CricPulse Global Media. All rights reserved.</footer>
-    <script>
-        let runs = 0, wickets = 0, balls = 0;
-        function updateDisplay() {
-            document.getElementById('display-score').innerText = runs + "/" + wickets;
-            document.getElementById('overs').innerText = Math.floor(balls / 6) + "." + (balls % 6);
-        }
-        function addRun() { runs++; balls++; updateDisplay(); }
-        function addWicket() { if(wickets < 10) { wickets++; balls++; updateDisplay(); } }
-    </script>
+</div>
+
+<script>
+    // 1. Scoring Logic
+    let runs = 0, wickets = 0, balls = 0;
+    function updateDisplay() {
+        document.getElementById('display-score').innerText = runs + "/" + wickets;
+        document.getElementById('overs').innerText = "Overs: " + Math.floor(balls / 6) + "." + (balls % 6);
+    }
+    function addRun() { runs++; balls++; updateDisplay(); }
+    function addWicket() { if(wickets < 10) { wickets++; balls++; updateDisplay(); } }
+
+    // 2. Global News Data (Simulated for Now)
+    const globalNews = [
+        { title: "ICC U19 World Cup 2026", desc: "Warm-up matches conclude as tournament kicks off in Zimbabwe.", icon: "🏆" },
+        { title: "Virat Kohli Nears Record", desc: "Kohli approaches Sachin's all-time century record after 71st PoTM.", icon: "⭐" },
+        { title: "Injured Stars Ruled Out", desc: "New Zealand ODIs face major shifts as injury list grows.", icon: "⚠️" },
+        { title: "T20 World Cup 2026 Groups", desc: "Ireland and Bangladesh announce squads for global qualifiers.", icon: "🌍" }
+    ];
+
+    function loadNews() {
+        const container = document.getElementById('news-container');
+        container.innerHTML = ""; // Clear loader
+        globalNews.forEach(news => {
+            container.innerHTML += `
+                <div class="news-item">
+                    <div class="news-thumb">${news.icon}</div>
+                    <div class="news-content">
+                        <h3>${news.title}</h3>
+                        <p>${news.desc}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Run news loader on start
+    window.onload = loadNews;
+</script>
+
 </body>
 </html>
