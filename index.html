@@ -3,102 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CricPulse | Global Cricket Authority</title>
+    <title>CricPulse | Global Match Center</title>
     <style>
-        :root { --primary: #00f2ff; --bg: #0d1117; --card: #161b22; --text: #c9d1d9; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 50px; }
+        :root { --accent: #00f2ff; --bg: #010409; --card-bg: #161b22; --text-gray: #8b949e; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; }
         
-        /* Header & Logo */
-        header { background: #010409; padding: 20px; text-align: center; border-bottom: 1px solid #30363d; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 28px; font-weight: 900; color: var(--primary); letter-spacing: -1px; }
-        .logo span { color: #ffffff; }
+        /* Navigation Tabs */
+        .tabs { display: flex; justify-content: center; background: #0d1117; border-bottom: 1px solid #30363d; sticky; top: 0; z-index: 10; }
+        .tab { padding: 15px 25px; cursor: pointer; color: var(--text-gray); font-weight: 600; border-bottom: 2px solid transparent; }
+        .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-        .container { max-width: 800px; margin: auto; padding: 20px; }
-
-        /* Score Card Section */
-        .match-card { background: var(--card); border-radius: 12px; padding: 25px; border: 1px solid #30363d; margin-bottom: 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
-        .live-tag { background: #f85149; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 15px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        .score { font-size: 60px; font-weight: bold; color: white; margin: 10px 0; }
-        .btn-group { margin-top: 20px; }
-        button { padding: 12px 25px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; margin: 5px; transition: 0.3s; }
-        .btn-run { background: var(--primary); color: #000; }
-        .btn-wicket { background: #f85149; color: white; }
-
-        /* News Section */
-        .section-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; border-left: 4px solid var(--primary); padding-left: 15px; color: white; }
-        .news-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .news-item { background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid #30363d; display: flex; align-items: center; transition: 0.2s; cursor: pointer; }
-        .news-item:hover { border-color: var(--primary); background: #1c2128; }
-        .news-thumb { width: 60px; height: 60px; background: #30363d; border-radius: 6px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .news-content h3 { margin: 0; font-size: 16px; color: #f0f6fc; }
-        .news-content p { margin: 5px 0 0; font-size: 13px; color: #8b949e; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        
+        /* Professional Match Card */
+        .match-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid #30363d; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .team-info { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .team-row { display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: bold; }
+        .match-status { border-left: 1px solid #30363d; padding-left: 20px; margin-left: 20px; min-width: 120px; text-align: right; }
+        .live-dot { height: 8px; width: 8px; background: #f85149; border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1.5s infinite; }
+        
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .category-tag { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-<header><div class="logo">CRIC<span>PULSE</span> GLOBAL</div></header>
+<div class="tabs">
+    <div class="tab active" onclick="filterMatches('live')">LIVE</div>
+    <div class="tab" onclick="filterMatches('intl')">INTERNATIONAL</div>
+    <div class="tab" onclick="filterMatches('domestic')">DOMESTIC & INDIAN</div>
+</div>
 
-<div class="container">
+<div class="container" id="match-list">
     <div class="match-card">
-        <div class="live-tag">LIVE MATCH</div>
-        <div style="color: #8b949e; font-size: 14px;">International T20 Series</div>
-        <div id="display-score" class="score">0/0</div>
-        <div id="overs" style="font-size: 18px; color: #8b949e;">Overs: 0.0</div>
-        <div class="btn-group">
-            <button class="btn-run" onclick="addRun()">+1 RUN</button>
-            <button class="btn-wicket" onclick="addWicket()">WICKET</button>
+        <div class="team-info">
+            <div class="category-tag">ICC Men's T20 World Cup</div>
+            <div class="team-row"><span>🇮🇳 IND</span> <span>156/4 (18.2)</span></div>
+            <div class="team-row"><span>🇦🇺 AUS</span> <span>Yet to bat</span></div>
+        </div>
+        <div class="match-status">
+            <div style="color: #f85149; font-size: 12px;"><span class="live-dot"></span>LIVE</div>
+            <div style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">IND elected to bat</div>
         </div>
     </div>
 
-    <div class="section-title">World Cricket Headlines</div>
-    <div class="news-grid" id="news-container">
-        <div class="news-item">
-            <div class="news-thumb">🏏</div>
-            <div class="news-content">
-                <h3>Loading Global News...</h3>
-                <p>Fetching the latest updates from the cricket world.</p>
-            </div>
+    <div class="match-card">
+        <div class="team-info">
+            <div class="category-tag">Ranji Trophy | Group C</div>
+            <div class="team-row"><span>UP</span> <span>245/10</span></div>
+            <div class="team-row"><span>MUM</span> <span>12/0 (4.0)</span></div>
+        </div>
+        <div class="match-status">
+            <div style="font-size: 12px; color: var(--text-gray);">Day 1: Stumps</div>
         </div>
     </div>
 </div>
 
 <script>
-    // 1. Scoring Logic
-    let runs = 0, wickets = 0, balls = 0;
-    function updateDisplay() {
-        document.getElementById('display-score').innerText = runs + "/" + wickets;
-        document.getElementById('overs').innerText = "Overs: " + Math.floor(balls / 6) + "." + (balls % 6);
+    function filterMatches(type) {
+        // Here we would add logic to fetch only 'live' or 'intl' matches from your API
+        console.log("Filtering for: " + type);
+        // Step 1: Request data from CricketData.org
+        // Step 2: Loop through data and create 'match-cards'
     }
-    function addRun() { runs++; balls++; updateDisplay(); }
-    function addWicket() { if(wickets < 10) { wickets++; balls++; updateDisplay(); } }
-
-    // 2. Global News Data (Simulated for Now)
-    const globalNews = [
-        { title: "ICC U19 World Cup 2026", desc: "Warm-up matches conclude as tournament kicks off in Zimbabwe.", icon: "🏆" },
-        { title: "Virat Kohli Nears Record", desc: "Kohli approaches Sachin's all-time century record after 71st PoTM.", icon: "⭐" },
-        { title: "Injured Stars Ruled Out", desc: "New Zealand ODIs face major shifts as injury list grows.", icon: "⚠️" },
-        { title: "T20 World Cup 2026 Groups", desc: "Ireland and Bangladesh announce squads for global qualifiers.", icon: "🌍" }
-    ];
-
-    function loadNews() {
-        const container = document.getElementById('news-container');
-        container.innerHTML = ""; // Clear loader
-        globalNews.forEach(news => {
-            container.innerHTML += `
-                <div class="news-item">
-                    <div class="news-thumb">${news.icon}</div>
-                    <div class="news-content">
-                        <h3>${news.title}</h3>
-                        <p>${news.desc}</p>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // Run news loader on start
-    window.onload = loadNews;
 </script>
 
 </body>
