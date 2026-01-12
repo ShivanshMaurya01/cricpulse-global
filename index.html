@@ -2,71 +2,173 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CricPulse | Global Match Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CricPulse Pro | Global Cricket Ecosystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #00f2ff; --bg: #010409; --card-bg: #161b22; --text-gray: #8b949e; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; }
-        
-        /* Navigation Tabs */
-        .tabs { display: flex; justify-content: center; background: #0d1117; border-bottom: 1px solid #30363d; sticky; top: 0; z-index: 10; }
-        .tab { padding: 15px 25px; cursor: pointer; color: var(--text-gray); font-weight: 600; border-bottom: 2px solid transparent; }
-        .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+        :root { --primary: #00f2ff; --secondary: #7000ff; --bg: #05070a; --card: #111827; --text: #f9fafb; --dim: #9ca3af; --glass: rgba(255, 255, 255, 0.03); }
+        * { box-sizing: border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
 
-        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        /* HEADER & SEARCH */
+        header { background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(20px); padding: 15px 20px; border-bottom: 1px solid #1f2937; position: sticky; top: 0; z-index: 2000; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logo { font-size: 26px; font-weight: 800; letter-spacing: -1.5px; }
+        .logo span { color: var(--primary); }
         
-        /* Professional Match Card */
-        .match-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid #30363d; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .team-info { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .team-row { display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: bold; }
-        .match-status { border-left: 1px solid #30363d; padding-left: 20px; margin-left: 20px; min-width: 120px; text-align: right; }
-        .live-dot { height: 8px; width: 8px; background: #f85149; border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1.5s infinite; }
+        .search-container { position: relative; width: 100%; }
+        .search-bar { width: 100%; background: var(--card); border: 1px solid #374151; padding: 12px 45px 12px 15px; border-radius: 14px; color: white; font-family: inherit; font-size: 14px; }
+        .search-bar:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
+        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--dim); cursor: pointer; }
+
+        /* TABS */
+        .nav-tabs { display: flex; background: var(--bg); border-bottom: 1px solid #1f2937; overflow-x: auto; scrollbar-width: none; gap: 10px; padding: 0 15px; }
+        .tab { padding: 15px 20px; cursor: pointer; color: var(--dim); font-weight: 700; font-size: 13px; white-space: nowrap; border-bottom: 3px solid transparent; }
+        .tab.active { color: var(--primary); border-bottom-color: var(--primary); background: linear-gradient(to top, rgba(0, 242, 255, 0.05), transparent); }
+
+        /* MATCH & PLAYER CARDS */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .card { background: var(--card); border-radius: 24px; padding: 24px; margin-bottom: 20px; border: 1px solid #1f2937; position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--secondary); opacity: 0; }
+        .card:hover::before { opacity: 1; }
         
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        .category-tag { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .series-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 1.5px; margin-bottom: 15px; display: block; }
+        .score-row { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; }
+        .team-box { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 800; }
+        .status-badge { display: inline-block; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 15px; background: rgba(0, 242, 255, 0.1); color: var(--primary); }
+
+        /* PLAYER SEARCH MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; padding: 40px 20px; backdrop-filter: blur(10px); }
+        .modal-content { background: var(--card); max-width: 500px; margin: 0 auto; border-radius: 30px; border: 1px solid var(--primary); padding: 30px; position: relative; }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: var(--dim); }
+
+        /* FOOTER NAV */
+        .footer-nav { position: fixed; bottom: 0; width: 100%; background: rgba(11, 15, 25, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #1f2937; }
+        .f-item { text-align: center; color: var(--dim); text-decoration: none; font-size: 11px; font-weight: 600; }
+        .f-item.active { color: var(--primary); }
+        .f-icon { font-size: 22px; display: block; margin-bottom: 5px; }
+
+        /* LOADING */
+        .shimmer { animation: loading 1.5s infinite linear; background: linear-gradient(to right, #1f2937 8%, #374151 18%, #1f2937 33%); background-size: 800px 104px; height: 100px; border-radius: 20px; }
+        @keyframes loading { 0% { background-position: -468px 0 } 100% { background-position: 468px 0 } }
     </style>
 </head>
 <body>
 
-<div class="tabs">
-    <div class="tab active" onclick="filterMatches('live')">LIVE</div>
-    <div class="tab" onclick="filterMatches('intl')">INTERNATIONAL</div>
-    <div class="tab" onclick="filterMatches('domestic')">DOMESTIC & INDIAN</div>
+<header>
+    <div class="header-top">
+        <div class="logo">CRIC<span>PULSE</span></div>
+        <div style="background: var(--secondary); padding: 5px 15px; border-radius: 50px; font-size: 12px; font-weight: 800;">PRO 2026</div>
+    </div>
+    <div class="search-container">
+        <input type="text" id="playerSearch" class="search-bar" placeholder="Search Global Players (e.g. Virat Kohli)...">
+        <span class="search-icon" onclick="searchPlayer()">🔍</span>
+    </div>
+</header>
+
+<div class="nav-tabs">
+    <div class="tab active" onclick="changeTab('live')">MATCH CENTER</div>
+    <div class="tab" onclick="changeTab('intl')">INTERNATIONAL</div>
+    <div class="tab" onclick="changeTab('indian')">INDIAN LEAGUES</div>
+    <div class="tab" onclick="changeTab('fantasy')">FANTASY STATS</div>
 </div>
 
-<div class="container" id="match-list">
-    <div class="match-card">
-        <div class="team-info">
-            <div class="category-tag">ICC Men's T20 World Cup</div>
-            <div class="team-row"><span>🇮🇳 IND</span> <span>156/4 (18.2)</span></div>
-            <div class="team-row"><span>🇦🇺 AUS</span> <span>Yet to bat</span></div>
-        </div>
-        <div class="match-status">
-            <div style="color: #f85149; font-size: 12px;"><span class="live-dot"></span>LIVE</div>
-            <div style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">IND elected to bat</div>
-        </div>
-    </div>
+<div class="container" id="main-content">
+    <div class="shimmer"></div>
+</div>
 
-    <div class="match-card">
-        <div class="team-info">
-            <div class="category-tag">Ranji Trophy | Group C</div>
-            <div class="team-row"><span>UP</span> <span>245/10</span></div>
-            <div class="team-row"><span>MUM</span> <span>12/0 (4.0)</span></div>
-        </div>
-        <div class="match-status">
-            <div style="font-size: 12px; color: var(--text-gray);">Day 1: Stumps</div>
+<div id="playerModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">×</span>
+        <div id="modalBody">
+            <h2 id="playerName" style="margin-top:0">Player Stats</h2>
+            <hr style="border:0; border-top:1px solid #1f2937; margin:20px 0">
+            <div id="playerStats">Searching...</div>
         </div>
     </div>
+</div>
+
+<div class="footer-nav">
+    <a href="#" class="f-item active"><span class="f-icon">🏏</span>Matches</a>
+    <a href="#" class="f-item"><span class="f-icon">🏆</span>Squads</a>
+    <a href="#" class="f-item"><span class="f-icon">📊</span>Analysis</a>
+    <a href="#" class="f-item"><span class="f-icon">⚙️</span>Settings</a>
 </div>
 
 <script>
-    function filterMatches(type) {
-        // Here we would add logic to fetch only 'live' or 'intl' matches from your API
-        console.log("Filtering for: " + type);
-        // Step 1: Request data from CricketData.org
-        // Step 2: Loop through data and create 'match-cards'
-    }
-</script>
+    const API_KEY = "5ba4d1d7-fc8f-4b60-8315-4721ccbef42c";
 
+    // FETCH LIVE MATCHES
+    async function fetchLiveMatches() {
+        const container = document.getElementById('main-content');
+        try {
+            const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${API_KEY}`);
+            const data = await res.json();
+            
+            if(data.status !== "success") throw new Error();
+
+            container.innerHTML = data.data.map(m => `
+                <div class="card">
+                    <span class="series-tag">${m.name}</span>
+                    <div class="score-row">
+                        <div class="team-box">${m.teams[0]}</div>
+                        <div style="font-size:18px; color:var(--primary)">${m.score?.[0]?.r || 0}/${m.score?.[0]?.w || 0}</div>
+                    </div>
+                    <div class="score-row">
+                        <div class="team-box">${m.teams[1]}</div>
+                        <div style="font-size:18px; color:var(--primary)">${m.score?.[1]?.r || 0}/${m.score?.[1]?.w || 0}</div>
+                    </div>
+                    <div class="status-badge">${m.status}</div>
+                </div>
+            `).join('');
+        } catch(e) {
+            container.innerHTML = '<p style="text-align:center; color:var(--dim)">Failed to load live feed. Check connection.</p>';
+        }
+    }
+
+    // SEARCH PLAYER
+    async function searchPlayer() {
+        const query = document.getElementById('playerSearch').value;
+        if(!query) return;
+
+        const modal = document.getElementById('playerModal');
+        const stats = document.getElementById('playerStats');
+        modal.style.display = 'block';
+        stats.innerHTML = '<div class="shimmer"></div>';
+
+        try {
+            const res = await fetch(`https://api.cricapi.com/v1/players?apikey=${API_KEY}&search=${query}`);
+            const data = await res.json();
+
+            if(data.data && data.data.length > 0) {
+                const p = data.data[0];
+                stats.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px">
+                        <span>Country:</span> <span style="color:var(--primary)">${p.country || 'N/A'}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px">
+                        <span>Role:</span> <span style="color:var(--primary)">${p.role || 'Player'}</span>
+                    </div>
+                    <p style="font-size:12px; color:var(--dim); line-height:1.6">Career stats are fetched based on professional league data. Points calculated for Fantasy League 2026.</p>
+                    <button class="status-badge" style="width:100%; border:none; cursor:pointer" onclick="closeModal()">Back to Matches</button>
+                `;
+                document.getElementById('playerName').innerText = p.name;
+            } else {
+                stats.innerHTML = 'No player found with that name.';
+            }
+        } catch(e) {
+            stats.innerHTML = 'Error searching for player.';
+        }
+    }
+
+    function closeModal() { document.getElementById('playerModal').style.display = 'none'; }
+    function changeTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        fetchLiveMatches();
+    }
+
+    window.onload = fetchLiveMatches;
+</script>
 </body>
 </html>
